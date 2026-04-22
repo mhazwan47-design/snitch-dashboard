@@ -3,7 +3,7 @@
     "product": "SNITCH Alert Dashboard",
     "mode": "Live Monitor",
     "marketBias": "Neutral",
-    "asOf": "2026-04-22 09:22 UTC",
+    "asOf": "2026-04-22 10:09 UTC",
     "dataSource": "collector.py"
   },
   "metrics": {
@@ -101,7 +101,44 @@
     }
   ],
   "performance": {
-    "scoreTrend": [],
+    "scoreTrend": [
+      {
+        "name": "Mon",
+        "focus": 4.1,
+        "emerging": 3.2,
+        "caution": 2.4
+      },
+      {
+        "name": "Tue",
+        "focus": 4.8,
+        "emerging": 3.6,
+        "caution": 2.7
+      },
+      {
+        "name": "Wed",
+        "focus": 5.1,
+        "emerging": 3.9,
+        "caution": 3.0
+      },
+      {
+        "name": "Thu",
+        "focus": 5.7,
+        "emerging": 4.2,
+        "caution": 3.1
+      },
+      {
+        "name": "Fri",
+        "focus": 6.3,
+        "emerging": 4.8,
+        "caution": 3.3
+      },
+      {
+        "name": "Sat",
+        "focus": 7.0,
+        "emerging": 5.2,
+        "caution": 3.5
+      }
+    ],
     "actionMix": [
       {
         "name": "Prepare / Wait",
