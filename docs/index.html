@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNITCH Alert Dashboard</title>
+  <style>
+    :root{
+      --bg:#071225;
+      --card:#0b1830;
+      --border:#223456;
+      --text:#eef2ff;
+      --muted:#93a4c3;
+      --green:#2ed180;
+      --amber:#f5b74f;
+      --red:#ef5a5a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg,#050d1d 0%, #0b1730 100%);
+      color:var(--text);
+      padding:24px;
+    }
+    .wrap{max-width:1300px;margin:0 auto}
+    .card{
+      background:rgba(11,24,48,0.95);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:22px;
+      margin-bottom:18px;
+    }
+    .grid{display:grid;gap:18px}
+    .top{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-bottom:18px}
+    .metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+    .metric{
+      background:#0f2140;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+    }
+    .label{font-size:12px;color:var(--muted);text-transform:uppercase}
+    .value{font-size:28px;font-weight:700;margin-top:8px}
+    h1{margin:0 0 8px;font-size:54px}
+    .muted{color:var(--muted)}
+    .pill{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#152745;
+      color:#d7e2fb;
+      font-size:12px;
+      margin-right:8px;
+      margin-top:12px;
+    }
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    input,button{
+      border:none;
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14px;
+    }
+    input{
+      flex:1;
+      background:#0a1325;
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+    button{
+      background:#eef2ff;
+      color:#081225;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .status{font-size:13px;color:var(--muted);margin-top:8px}
+    .main{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+    .three{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .token{
+      background:#102240;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      margin-top:12px;
+      cursor:pointer;
+    }
+    .token:hover{background:#13284b}
+    .name{font-size:26px;font-weight:700}
+    .pair{color:var(--muted);font-size:13px;margin-top:4px}
+    .badge{
+      display:inline-block;
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      margin-top:8px;
+    }
+    .b-green{background:rgba(46,209,128,.14);color:#81f0b7;border:1px solid rgba(46,209,128,.28)}
+    .b-amber{background:rgba(245,183,79,.14);color:#ffd58e;border:1px solid rgba(245,183,79,.28)}
+    .b-red{background:rgba(239,90,90,.14);color:#ff9a9a;border:1px solid rgba(239,90,90,.28)}
+    .detail-box{
+      background:#0a1325;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+      margin-top:10px;
+    }
+    .detail-box .k{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    @media (max-width:1100px){
+      .top,.main,.three{grid-template-columns:1fr}
+      .metrics{grid-template-columns:repeat(2,1fr)}
+      h1{font-size:40px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="card">
+        <h1>SNITCH Alert Dashboard</h1>
+        <p class="muted">Dark premium signal workspace for fast trading decisions.</p>
+        <div id="hero"></div>
+      </div>
+
+      <div class="card">
+        <div class="muted" style="margin-bottom:10px;">Data Source</div>
+        <div class="row">
+          <input id="dataUrl" value="data/dashboard-current.json" />
+          <button onclick="loadRemoteData()">Connect</button>
+        </div>
+        <div class="status" id="status">Using starter data</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="metrics" id="metrics"></div>
+    </div>
+
+    <div class="main">
+      <div class="grid">
+        <div class="three">
+          <div class="card">
+            <h2>Trade Focus Now</h2>
+            <div id="tradeFocusNow"></div>
+          </div>
+          <div class="card">
+            <h2>Emerging Potential</h2>
+            <div id="emergingPotential"></div>
+          </div>
+          <div class="card">
+            <h2>Caution / Avoid</h2>
+            <div id="cautionAvoid"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="detailPanel">
+        <div class="muted">Select a token card to view the action plan.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const starterData = {
+      meta: {
+        mode: "Live Monitor",
+        marketBias: "Neutral",
+        asOf: "Today"
+      },
+      metrics: {
+        qualifiedSignals: 1,
+        tradeFocus: 1,
+        emerging: 0,
+        caution: 0,
+        avgConfidence: 68,
+        winRate30d: 58
+      },
+      tradeFocusNow: [
+        {
+          token: "WETH",
+          pair: "WETH/USDC",
+          action: "Prepare Entry",
+          actionShort: "WAIT FOR CONFIRMATION",
+          score: 7.1,
+          direction: "Buy Pressure",
+          impactPct: 0.82,
+          tradeUsd: 28370,
+          risk: "Medium",
+          why: "Meaningful buy pressure on a liquid pair.",
+          nextStep: "Open chart now and wait for confirmation.",
+          doNot: "Do not chase spike.",
+          cancelIf: "Cancel if buy flow fades."
+        }
+      ],
+      emergingPotential: [],
+      cautionAvoid: []
+    };
+
+    let dashboardData = starterData;
+
+    function badgeClass(action) {
+      const a = (action || "").toUpperCase();
+      if (["BUY NOW","PREPARE ENTRY","WAIT FOR CONFIRMATION"].includes(a)) return "badge b-green";
+      if (["WATCH","KEEP ON WATCH"].includes(a)) return "badge b-amber";
+      return "badge b-red";
+    }
+
+    function riskClass(risk) {
+      if (risk === "High") return "badge b-red";
+      if (risk === "Medium") return "badge b-amber";
+      return "badge b-green";
+    }
+
+    function fmtUsd(v) {
+      if (typeof v !== "number") return v;
+      if (v >= 1000000) return `$${(v/1000000).toFixed(2)}M`;
+      if (v >= 1000) return `$${(v/1000).toFixed(2)}K`;
+      return `$${v.toFixed(2)}`;
+    }
+
+    function renderHero(meta) {
+      document.getElementById("hero").innerHTML = `
+        <span class="pill">${meta.mode || "Live Monitor"}</span>
+        <span class="pill">${meta.marketBias || "Neutral"}</span>
+        <span class="pill">${meta.asOf || ""}</span>
+      `;
+    }
+
+    function renderMetrics(metrics) {
+      const items = [
+        ["Qualified", metrics.qualifiedSignals],
+        ["Focus", metrics.tradeFocus],
+        ["Emerging", metrics.emerging],
+        ["Caution", metrics.caution],
+        ["Avg Confidence", `${metrics.avgConfidence}%`],
+        ["30D Win Rate", `${metrics.winRate30d}%`]
+      ];
+      document.getElementById("metrics").innerHTML = items.map(([k,v]) => `
+        <div class="metric">
+          <div class="label">${k}</div>
+          <div class="value">${v}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderTokenList(id, arr) {
+      const el = document.getElementById(id);
+      if (!arr || arr.length === 0) {
+        el.innerHTML = `<div class="muted">No qualified names right now.</div>`;
+        return;
+      }
+      el.innerHTML = arr.map((item, idx) => `
+        <div class="token" onclick="openDetail('${id}', ${idx})">
+          <div class="name">${item.token}</div>
+          <div class="pair">${item.pair}</div>
+          <div class="${badgeClass(item.actionShort || item.action)}">${item.actionShort || item.action}</div>
+          <div style="margin-top:10px;">Score ${item.score} · Risk <span class="${riskClass(item.risk)}">${item.risk}</span></div>
+          <div class="muted" style="margin-top:10px;">${item.why}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderAll(data) {
+      renderHero(data.meta || {});
+      renderMetrics(data.metrics || {});
+      renderTokenList("tradeFocusNow", data.tradeFocusNow || []);
+      renderTokenList("emergingPotential", data.emergingPotential || []);
+      renderTokenList("cautionAvoid", data.cautionAvoid || []);
+    }
+
+    function openDetail(section, idx) {
+      const map = {
+        tradeFocusNow: dashboardData.tradeFocusNow || [],
+        emergingPotential: dashboardData.emergingPotential || [],
+        cautionAvoid: dashboardData.cautionAvoid || []
+      };
+      const item = map[section][idx];
+      if (!item) return;
+
+      document.getElementById("detailPanel").innerHTML = `
+        <h2>${item.token}</h2>
+        <div class="muted">${item.pair} · ${item.direction}</div>
+
+        <div class="detail-box">
+          <div class="k">Action Now</div>
+          <div>${item.action}</div>
+        </div>
+        <div class="detail-box">
+          <div class="k">Trade Value</div>
+          <div>${fmtUsd(item.tradeUsd)}</div>
+        </div>
+        <div class="detail-box">
+          <div class="k">Impact</div>
+          <div>${item.impactPct}%</div>
+        </div>
+        <div class="detail-box">
+          <div class="k">What it means</div>
+          <div>${item.why}</div>
+        </div>
+        <div class="detail-box">
+          <div class="k">What to do next</div>
+          <div>${item.nextStep}</div>
+        </div>
+        <div class="detail-box">
+          <div class="k">Do not do</div>
+          <div>${item.doNot}</div>
+        </div>
+        <div class="detail-box">
+          <div class="k">Cancel plan if</div>
+          <div>${item.cancelIf}</div>
+        </div>
+      `;
+    }
+
+    async function loadRemoteData() {
+      const url = document.getElementById("dataUrl").value.trim() || "data/dashboard-current.json";
+      const status = document.getElementById("status");
+      try {
+        status.textContent = "Loading live JSON...";
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        dashboardData = json;
+        renderAll(dashboardData);
+        status.textContent = `Connected to ${url}`;
+        if ((dashboardData.tradeFocusNow || []).length > 0) openDetail("tradeFocusNow", 0);
+      } catch (e) {
+        dashboardData = starterData;
+        renderAll(dashboardData);
+        status.textContent = `Could not fetch ${url}. Using starter data.`;
+        openDetail("tradeFocusNow", 0);
+      }
+    }
+
+    renderAll(dashboardData);
+    openDetail("tradeFocusNow", 0);
+    loadRemoteData();
+  </script>
+</body>
+</html>
