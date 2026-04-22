@@ -60,8 +60,6 @@ def clean_signal(raw: dict):
 
     if not token or not pair:
         return None
-
-    # hard reject
     if is_stable_like(token):
         return None
     if trade_usd < 100:
@@ -92,14 +90,14 @@ def clean_signal(raw: dict):
 
 def main():
     if not RAW_FILE.exists():
-        print(f"Missing {RAW_FILE.name}")
         OUTPUT_FILE.write_text("[]", encoding="utf-8")
+        print("raw-signals.json missing")
         return
 
     raw_data = json.loads(RAW_FILE.read_text(encoding="utf-8"))
     cleaned = []
-
     seen = set()
+
     for item in raw_data:
         c = clean_signal(item)
         if not c:
@@ -111,7 +109,6 @@ def main():
         cleaned.append(c)
 
     cleaned.sort(key=lambda x: (x["score"], x["tradeUsd"]), reverse=True)
-
     OUTPUT_FILE.write_text(json.dumps(cleaned, indent=2), encoding="utf-8")
     print(f"Wrote {OUTPUT_FILE}")
 
