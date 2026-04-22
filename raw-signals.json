@@ -1,0 +1,72 @@
+[
+  {
+    "token": "WETH",
+    "pair": "WETH/USDC",
+    "direction": "Buy Pressure",
+    "score": 7.4,
+    "impactPct": 0.91,
+    "tradeUsd": 31250,
+    "risk": "Medium",
+    "confidence": "Medium",
+    "why": "Strong buy pressure on a liquid pair.",
+    "nextStep": "Open chart now and wait for confirmation.",
+    "doNot": "Do not chase spike.",
+    "cancelIf": "Cancel if buy flow fades."
+  },
+  {
+    "token": "LINK",
+    "pair": "LINK/USDC",
+    "direction": "Buy Pressure",
+    "score": 5.6,
+    "impactPct": 0.31,
+    "tradeUsd": 4200,
+    "risk": "Medium",
+    "confidence": "Medium",
+    "why": "Early setup still needs confirmation.",
+    "nextStep": "Watch next 15–30 minutes.",
+    "doNot": "Do not enter big size yet.",
+    "cancelIf": "Cancel if follow-through fails."
+  },
+  {
+    "token": "SOL",
+    "pair": "SOL/cbBTC",
+    "direction": "Sell Pressure",
+    "score": 5.2,
+    "impactPct": 0.97,
+    "tradeUsd": 2780,
+    "risk": "High",
+    "confidence": "Medium",
+    "why": "Bearish dominance detected.",
+    "nextStep": "Avoid fresh entry and reduce bullish bias.",
+    "doNot": "Do not catch the dip blindly.",
+    "cancelIf": "Cancel if sell pressure fades."
+  },
+  {
+    "token": "USDC",
+    "pair": "WETH/USDC",
+    "direction": "Buy Pressure",
+    "score": 8.1,
+    "impactPct": 0.12,
+    "tradeUsd": 18000,
+    "risk": "Low",
+    "confidence": "High",
+    "why": "Stablecoin noise example.",
+    "nextStep": "Ignore.",
+    "doNot": "Ignore.",
+    "cancelIf": "Ignore."
+  },
+  {
+    "token": "MICRO",
+    "pair": "MICRO/WETH",
+    "direction": "Buy Pressure",
+    "score": 6.3,
+    "impactPct": 4.2,
+    "tradeUsd": 43,
+    "risk": "High",
+    "confidence": "Low",
+    "why": "Tiny trade with fake impact.",
+    "nextStep": "Ignore.",
+    "doNot": "Ignore.",
+    "cancelIf": "Ignore."
+  }
+]
