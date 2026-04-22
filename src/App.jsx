@@ -6,32 +6,35 @@ import {
   Area,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   PieChart,
   Pie,
   Cell,
-  Legend,
   BarChart,
-  Bar
+  Bar,
+  CartesianGrid,
+  Legend,
 } from "recharts";
 import {
-  Radar,
   Search,
   Bell,
-  Eye,
-  RefreshCw,
-  Upload,
-  Activity,
-  Target,
-  TriangleAlert,
   Rocket,
-  Gauge,
   TrendingUp,
+  TriangleAlert,
+  Upload,
+  RefreshCw,
+  Eye,
+  Target,
+  Filter,
+  Activity,
+  Gauge,
+  Wallet,
+  Radar,
   Clock3,
+  Link2,
   Database,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 
 const starterData = {
@@ -39,16 +42,16 @@ const starterData = {
     product: "SNITCH Alert Dashboard",
     mode: "Live Monitor",
     marketBias: "Neutral",
-    asOf: "Starter Data",
-    dataSource: "Built-in starter"
+    asOf: "Today, 20:45",
+    dataSource: "On-chain + exchange-enriched signals",
   },
   metrics: {
-    qualifiedSignals: 3,
-    tradeFocus: 1,
-    emerging: 1,
-    caution: 1,
+    qualifiedSignals: 12,
+    tradeFocus: 3,
+    emerging: 5,
+    caution: 4,
     avgConfidence: 68,
-    winRate30d: 58
+    winRate30d: 58,
   },
   tradeFocusNow: [
     {
@@ -57,42 +60,116 @@ const starterData = {
       action: "Prepare Entry",
       actionShort: "WAIT FOR CONFIRMATION",
       confidence: "Medium",
-      score: 7.4,
+      score: 7.1,
       direction: "Buy Pressure",
-      impactPct: 0.91,
-      tradeUsd: 31250,
+      impactPct: 0.82,
+      tradeUsd: 28370,
+      liquidityUsd: 15250000,
       risk: "Medium",
-      why: "Strong buy pressure on a liquid pair.",
-      nextStep: "Open chart now and wait for confirmation.",
-      doNot: "Do not chase spike.",
-      cancelIf: "Cancel if buy flow fades.",
+      why: "Meaningful buy pressure on a liquid pair with clean market structure.",
+      nextStep: "Open chart now and wait for confirmation candle or clean pullback before entry.",
+      doNot: "Do not chase a fast spike.",
+      cancelIf: "Cancel if buy flow fades or price loses short-term support.",
+      binanceTradable: true,
       history: [
-        { name: "Mon", score: 44 },
-        { name: "Tue", score: 49 },
-        { name: "Wed", score: 53 },
-        { name: "Thu", score: 59 },
-        { name: "Fri", score: 65 },
-        { name: "Sat", score: 74 }
-      ]
-    }
-  ],
-  emergingPotential: [
+        { d: "Mon", score: 42 },
+        { d: "Tue", score: 51 },
+        { d: "Wed", score: 57 },
+        { d: "Thu", score: 61 },
+        { d: "Fri", score: 66 },
+        { d: "Sat", score: 71 },
+      ],
+    },
+    {
+      token: "cbBTC",
+      pair: "USDC/cbBTC",
+      action: "Watch Closely",
+      actionShort: "WATCH",
+      confidence: "Medium",
+      score: 6.3,
+      direction: "Buy Pressure",
+      impactPct: 0.55,
+      tradeUsd: 10440,
+      liquidityUsd: 13110000,
+      risk: "Medium",
+      why: "Repeated buy flow detected on a recognized asset.",
+      nextStep: "Keep on active watchlist and wait for next qualifying signal.",
+      doNot: "Do not enter big size immediately.",
+      cancelIf: "Cancel if opposite pressure appears.",
+      binanceTradable: true,
+      history: [
+        { d: "Mon", score: 38 },
+        { d: "Tue", score: 46 },
+        { d: "Wed", score: 48 },
+        { d: "Thu", score: 53 },
+        { d: "Fri", score: 59 },
+        { d: "Sat", score: 63 },
+      ],
+    },
     {
       token: "LINK",
       pair: "LINK/USDC",
+      action: "Prepare Entry",
+      actionShort: "WAIT FOR CONFIRMATION",
+      confidence: "Medium",
+      score: 5.8,
+      direction: "Buy Pressure",
+      impactPct: 0.47,
+      tradeUsd: 6980,
+      liquidityUsd: 2200000,
+      risk: "Medium",
+      why: "Healthy liquidity with improving flow and tradable market context.",
+      nextStep: "Watch next 15–30 minutes and prepare a limit entry plan.",
+      doNot: "Do not force entry before confirmation.",
+      cancelIf: "Cancel if volume fades.",
+      binanceTradable: true,
+      history: [
+        { d: "Mon", score: 28 },
+        { d: "Tue", score: 34 },
+        { d: "Wed", score: 39 },
+        { d: "Thu", score: 44 },
+        { d: "Fri", score: 52 },
+        { d: "Sat", score: 58 },
+      ],
+    },
+  ],
+  emergingPotential: [
+    {
+      token: "SAPIEN",
+      pair: "USDC/SAPIEN",
       action: "Keep On Watch",
       actionShort: "WATCH",
       confidence: "Medium",
-      score: 5.6,
+      score: 5.78,
       direction: "Buy Pressure",
-      impactPct: 0.31,
-      tradeUsd: 4200,
+      impactPct: 0.09,
+      tradeUsd: 879.9,
+      liquidityUsd: 937000,
       risk: "Medium",
-      why: "Early setup still needs confirmation.",
-      nextStep: "Watch next 15–30 minutes.",
+      why: "Early momentum is forming but setup still needs follow-through.",
+      nextStep: "Monitor next 15–30 minutes for a second strong signal.",
       doNot: "Do not enter big size yet.",
-      cancelIf: "Cancel if follow-through fails."
-    }
+      cancelIf: "Cancel if there is no follow-up buy flow.",
+      binanceTradable: false,
+    },
+    {
+      token: "VIRTUAL",
+      pair: "VIRTUAL/WETH",
+      action: "Keep On Watch",
+      actionShort: "WATCH",
+      confidence: "Medium",
+      score: 5.4,
+      direction: "Buy Pressure",
+      impactPct: 0.33,
+      tradeUsd: 2450,
+      liquidityUsd: 746060,
+      risk: "High",
+      why: "Interesting momentum, but risk still elevated and confirmation is required.",
+      nextStep: "Track closely and only act if clean follow-through appears.",
+      doNot: "Do not chase speculative spikes.",
+      cancelIf: "Cancel if flow becomes mixed.",
+      binanceTradable: false,
+    },
   ],
   cautionAvoid: [
     {
@@ -101,66 +178,85 @@ const starterData = {
       action: "Reduce Risk",
       actionShort: "REDUCE RISK",
       confidence: "Medium",
-      score: 5.2,
+      score: 5.22,
       direction: "Sell Pressure",
       impactPct: 0.97,
       tradeUsd: 2780,
+      liquidityUsd: 286820,
       risk: "High",
-      why: "Bearish dominance detected.",
+      why: "Bearish dominance detected. This is not a clean long setup.",
       nextStep: "Avoid fresh entry and reduce bullish bias.",
       doNot: "Do not catch the dip blindly.",
-      cancelIf: "Cancel if sell pressure fades."
-    }
+      cancelIf: "Cancel if sell pressure fades and structure improves.",
+      binanceTradable: true,
+    },
+    {
+      token: "ETHx",
+      pair: "WETH/ETHx",
+      action: "Avoid Fresh Entry",
+      actionShort: "AVOID",
+      confidence: "Low",
+      score: 5.01,
+      direction: "Sell Pressure",
+      impactPct: 1.73,
+      tradeUsd: 78.49,
+      liquidityUsd: 4540,
+      risk: "High",
+      why: "Thin liquidity and unstable flow increase risk significantly.",
+      nextStep: "Stay out unless structure becomes cleaner.",
+      doNot: "Do not enter on noise.",
+      cancelIf: "Cancel avoid stance only if risk conditions improve.",
+      binanceTradable: false,
+    },
   ],
   recentSignals: [
-    {
-      time: "Auto",
-      token: "WETH",
-      pair: "WETH/USDC",
-      direction: "Buy Pressure",
-      action: "WAIT FOR CONFIRMATION",
-      score: 7.4,
-      impact: "0.91%",
-      usd: "$31,250.00"
-    }
+    { time: "20:41", token: "WETH", pair: "WETH/USDC", direction: "Buy Pressure", action: "WAIT FOR CONFIRMATION", score: 7.1, impact: "0.82%", usd: "$28.37K" },
+    { time: "20:36", token: "SAPIEN", pair: "USDC/SAPIEN", direction: "Buy Pressure", action: "WATCH", score: 5.78, impact: "0.09%", usd: "$879.90" },
+    { time: "20:31", token: "SOL", pair: "SOL/cbBTC", direction: "Sell Pressure", action: "REDUCE RISK", score: 5.22, impact: "0.97%", usd: "$2.78K" },
+    { time: "20:28", token: "ETHx", pair: "WETH/ETHx", direction: "Sell Pressure", action: "AVOID", score: 5.01, impact: "1.73%", usd: "$78.49" },
   ],
   performance: {
     scoreTrend: [
-      { name: "Mon", focus: 4.1, emerging: 3.2, caution: 2.4 },
-      { name: "Tue", focus: 4.8, emerging: 3.6, caution: 2.7 },
-      { name: "Wed", focus: 5.1, emerging: 3.9, caution: 3.0 },
-      { name: "Thu", focus: 5.7, emerging: 4.2, caution: 3.1 },
-      { name: "Fri", focus: 6.3, emerging: 4.8, caution: 3.3 },
-      { name: "Sat", focus: 7.0, emerging: 5.2, caution: 3.5 }
+      { name: "Mon", focus: 4.1, emerging: 3.4, caution: 2.6 },
+      { name: "Tue", focus: 4.8, emerging: 3.9, caution: 2.8 },
+      { name: "Wed", focus: 5.2, emerging: 4.0, caution: 3.1 },
+      { name: "Thu", focus: 5.6, emerging: 4.4, caution: 3.4 },
+      { name: "Fri", focus: 6.0, emerging: 4.8, caution: 3.0 },
+      { name: "Sat", focus: 6.4, emerging: 5.1, caution: 3.6 },
     ],
     actionMix: [
-      { name: "Prepare / Wait", value: 1 },
-      { name: "Watch", value: 1 },
-      { name: "Avoid / Reduce", value: 1 }
+      { name: "Prepare / Wait", value: 42 },
+      { name: "Watch", value: 33 },
+      { name: "Avoid / Reduce", value: 25 },
     ],
     proof: [
-      { metric: "Qualified Signals", value: "3" },
+      { metric: "Qualified Signals", value: "12" },
       { metric: "30D Win Rate", value: "58%" },
       { metric: "Avg Confidence", value: "68/100" },
-      { metric: "Risk-Off Alerts", value: "1" }
-    ]
-  }
+      { metric: "Risk-Off Alerts", value: "4" },
+    ],
+  },
 };
 
 function normalizeIncomingData(raw) {
   if (!raw || typeof raw !== "object") return starterData;
   return {
-    meta: { ...starterData.meta, ...(raw.meta || {}) },
-    metrics: { ...starterData.metrics, ...(raw.metrics || {}) },
-    tradeFocusNow: Array.isArray(raw.tradeFocusNow) ? raw.tradeFocusNow : [],
-    emergingPotential: Array.isArray(raw.emergingPotential) ? raw.emergingPotential : [],
-    cautionAvoid: Array.isArray(raw.cautionAvoid) ? raw.cautionAvoid : [],
-    recentSignals: Array.isArray(raw.recentSignals) ? raw.recentSignals : [],
+    meta: {
+      ...starterData.meta,
+      ...(raw.meta || {}),
+    },
+    metrics: {
+      ...starterData.metrics,
+      ...(raw.metrics || {}),
+    },
+    tradeFocusNow: Array.isArray(raw.tradeFocusNow) ? raw.tradeFocusNow : starterData.tradeFocusNow,
+    emergingPotential: Array.isArray(raw.emergingPotential) ? raw.emergingPotential : starterData.emergingPotential,
+    cautionAvoid: Array.isArray(raw.cautionAvoid) ? raw.cautionAvoid : starterData.cautionAvoid,
+    recentSignals: Array.isArray(raw.recentSignals) ? raw.recentSignals : starterData.recentSignals,
     performance: {
-      scoreTrend: Array.isArray(raw.performance?.scoreTrend) ? raw.performance.scoreTrend : starterData.performance.scoreTrend,
-      actionMix: Array.isArray(raw.performance?.actionMix) ? raw.performance.actionMix : starterData.performance.actionMix,
-      proof: Array.isArray(raw.performance?.proof) ? raw.performance.proof : starterData.performance.proof
-    }
+      ...starterData.performance,
+      ...(raw.performance || {}),
+    },
   };
 }
 
@@ -171,98 +267,90 @@ function fmtUsd(v) {
   return `$${v.toFixed(2)}`;
 }
 
-function actionTone(action) {
-  const a = (action || "").toUpperCase();
-  if (["BUY NOW", "PREPARE ENTRY", "WAIT FOR CONFIRMATION"].includes(a)) return "green";
-  if (["WATCH", "KEEP ON WATCH"].includes(a)) return "amber";
-  return "red";
+function scoreColor(score) {
+  if (score >= 7) return "text-emerald-400";
+  if (score >= 5) return "text-amber-300";
+  return "text-rose-400";
 }
 
-function riskTone(risk) {
-  if (risk === "High") return "red";
-  if (risk === "Medium") return "amber";
-  return "green";
+function actionBadge(action) {
+  if (["BUY NOW", "PREPARE ENTRY", "WAIT FOR CONFIRMATION"].includes(action)) return "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
+  if (["WATCH", "KEEP ON WATCH"].includes(action)) return "bg-amber-500/15 text-amber-300 border-amber-500/30";
+  return "bg-rose-500/15 text-rose-300 border-rose-500/30";
 }
 
-function TinyBadge({ children, tone = "amber" }) {
-  return <span className={`badge badge-${tone}`}>{children}</span>;
-}
-
-function MiniMetric({ icon: Icon, label, value }) {
-  return (
-    <div className="mini-metric">
-      <div className="mini-metric-label">
-        <Icon size={14} />
-        <span>{label}</span>
-      </div>
-      <div className="mini-metric-value">{value}</div>
-    </div>
-  );
-}
-
-function ProgressBar({ value }) {
-  const v = Math.max(0, Math.min(100, value));
-  return (
-    <div className="progress-wrap">
-      <div className="progress-bar" style={{ width: `${v}%` }} />
-    </div>
-  );
+function riskBadge(risk) {
+  if (risk === "High") return "bg-rose-500/15 text-rose-300 border-rose-500/30";
+  if (risk === "Medium") return "bg-amber-500/15 text-amber-300 border-amber-500/30";
+  return "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
 }
 
 function TokenCard({ item, onOpen }) {
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-      <div className="token-card">
-        <div className="token-head">
+      <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl backdrop-blur p-6">
+        <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="token-name">{item.token}</div>
-            <div className="token-pair">{item.pair}</div>
+            <h3 className="text-slate-50 text-xl font-semibold">{item.token}</h3>
+            <p className="text-slate-400 mt-1 text-sm">{item.pair}</p>
           </div>
-          <TinyBadge tone={actionTone(item.actionShort || item.action)}>
+          <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${actionBadge(item.actionShort || item.action)}`}>
             {item.actionShort || item.action}
-          </TinyBadge>
+          </span>
         </div>
 
-        <div className="token-stats">
-          <div className="stat-box">
-            <div className="stat-label">Score</div>
-            <div className="stat-value">{item.score}</div>
+        <div className="grid grid-cols-2 gap-3 text-sm mt-4">
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-3">
+            <div className="text-slate-400">Score</div>
+            <div className={`text-2xl font-semibold ${scoreColor(item.score)}`}>{item.score}</div>
           </div>
-          <div className="stat-box">
-            <div className="stat-label">Risk</div>
-            <div className="stat-value">
-              <TinyBadge tone={riskTone(item.risk)}>{item.risk}</TinyBadge>
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-3">
+            <div className="text-slate-400">Risk</div>
+            <div className="mt-1">
+              <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${riskBadge(item.risk)}`}>
+                {item.risk}
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="signal-row">
-          <span>Signal Strength</span>
-          <span>{Math.round(item.score * 10)}/100</span>
-        </div>
-        <ProgressBar value={Math.round(item.score * 10)} />
-
-        <p className="token-why">{item.why}</p>
-
-        <div className="token-stats">
-          <div className="stat-box">
-            <div className="stat-label">Trade USD</div>
-            <div className="stat-value">{fmtUsd(item.tradeUsd)}</div>
+        <div className="mt-4">
+          <div className="flex justify-between text-xs text-slate-400 mb-2">
+            <span>Signal Strength</span>
+            <span>{Math.round(item.score * 10)}/100</span>
           </div>
-          <div className="stat-box">
-            <div className="stat-label">Impact</div>
-            <div className="stat-value">{item.impactPct}%</div>
+          <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-emerald-500 rounded-full"
+              style={{ width: `${Math.min(100, Math.round(item.score * 10))}%` }}
+            />
           </div>
         </div>
 
-        <div className="btn-row">
-          <button className="btn btn-primary" onClick={() => onOpen(item)}>
-            <Eye size={16} />
-            <span>Open Detail</span>
+        <div className="text-sm text-slate-300 leading-6 mt-4">{item.why}</div>
+
+        <div className="grid grid-cols-2 gap-3 text-sm text-slate-300 mt-4">
+          <div className="rounded-2xl bg-slate-900/60 border border-slate-800 p-3">
+            <div className="text-slate-400 text-xs">Trade USD</div>
+            <div className="font-medium">{fmtUsd(item.tradeUsd)}</div>
+          </div>
+          <div className="rounded-2xl bg-slate-900/60 border border-slate-800 p-3">
+            <div className="text-slate-400 text-xs">Impact</div>
+            <div className="font-medium">{item.impactPct}%</div>
+          </div>
+        </div>
+
+        <div className="flex gap-2 pt-1 mt-4">
+          <button
+            className="inline-flex items-center rounded-2xl bg-slate-100 text-slate-950 hover:bg-white px-4 py-2 text-sm font-medium"
+            onClick={() => onOpen(item)}
+          >
+            <Eye className="w-4 h-4 mr-2" />
+            Open Detail
           </button>
-          <button className="btn btn-secondary">
-            <Bell size={16} />
-            <span>Set Alert</span>
+          <button className="inline-flex items-center rounded-2xl border border-slate-700 text-slate-200 hover:bg-slate-900 px-4 py-2 text-sm font-medium">
+            <Bell className="w-4 h-4 mr-2" />
+            Set Alert
           </button>
         </div>
       </div>
@@ -270,97 +358,159 @@ function TokenCard({ item, onOpen }) {
   );
 }
 
-function DetailPanel({ item }) {
-  if (!item) {
-    return <div className="panel empty-panel">Select a token card to view the full action plan.</div>;
-  }
-
+function StatCard({ icon: Icon, label, value }) {
   return (
-    <div className="panel detail-panel">
-      <div className="detail-header">
-        <div>
-          <div className="detail-title">{item.token}</div>
-          <div className="detail-sub">{item.pair} · {item.direction}</div>
-        </div>
-        <div className="detail-badges">
-          <TinyBadge tone={actionTone(item.actionShort || item.action)}>
-            {item.actionShort || item.action}
-          </TinyBadge>
-          <TinyBadge tone={riskTone(item.risk)}>{item.risk}</TinyBadge>
-        </div>
+    <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-4">
+      <div className="flex items-center gap-2 text-slate-400 text-sm">
+        <Icon className="w-4 h-4" />
+        {label}
       </div>
-
-      <div className="detail-metrics">
-        <MiniMetric icon={Gauge} label="Action Score" value={String(item.score)} />
-        <MiniMetric icon={Activity} label="Liquidity Impact" value={`${item.impactPct}%`} />
-        <MiniMetric icon={TrendingUp} label="Trade Value" value={fmtUsd(item.tradeUsd)} />
-      </div>
-
-      <div className="detail-grid">
-        <div className="detail-box">
-          <div className="detail-box-title">Action Now</div>
-          <div>{item.action}</div>
-        </div>
-        <div className="detail-box">
-          <div className="detail-box-title">What it means</div>
-          <div>{item.why}</div>
-        </div>
-        <div className="detail-box">
-          <div className="detail-box-title">What to do next</div>
-          <div>{item.nextStep}</div>
-        </div>
-        <div className="detail-box">
-          <div className="detail-box-title">Do not do</div>
-          <div>{item.doNot}</div>
-        </div>
-        <div className="detail-box">
-          <div className="detail-box-title">Cancel plan if</div>
-          <div>{item.cancelIf}</div>
-        </div>
-      </div>
-
-      {Array.isArray(item.history) && item.history.length > 0 && (
-        <div className="chart-card">
-          <div className="section-title-sm">Recent Performance Matrix</div>
-          <div className="section-sub">Signal score trend for this token</div>
-          <div className="chart-wrap">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={item.history}>
-                <defs>
-                  <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#22c55e" stopOpacity={0.55} />
-                    <stop offset="100%" stopColor="#22c55e" stopOpacity={0.02} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
-                <XAxis dataKey="name" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
-                <Tooltip
-                  contentStyle={{
-                    background: "#020617",
-                    border: "1px solid #334155",
-                    borderRadius: 16
-                  }}
-                />
-                <Area type="monotone" dataKey="score" stroke="#22c55e" fill="url(#scoreGradient)" strokeWidth={3} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
+      <div className="text-slate-50 text-2xl font-semibold mt-2">{value}</div>
     </div>
   );
 }
 
-function Section({ title, desc, items, onOpen }) {
+function ActionLine({ title, body }) {
   return (
-    <div className="panel">
-      <div className="section-title">{title}</div>
-      <div className="section-sub">{desc}</div>
+    <div>
+      <div className="text-slate-400 text-xs uppercase tracking-wide mb-1">{title}</div>
+      <div>{body}</div>
+    </div>
+  );
+}
+
+function Meter({ label, value, inverse = false }) {
+  const normalized = Math.max(0, Math.min(100, value));
+  return (
+    <div>
+      <div className="flex justify-between text-xs text-slate-400 mb-2">
+        <span>{label}</span>
+        <span>{Math.round(normalized)}</span>
+      </div>
+      <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-emerald-500 rounded-full"
+          style={{ width: `${inverse ? 100 - normalized : normalized}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function DetailPanel({ item }) {
+  if (!item) {
+    return (
+      <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl h-full">
+        <div className="p-8 text-slate-400 flex items-center justify-center h-full min-h-[420px]">
+          Select a token card to view the full action plan.
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
+      <div className="border-b border-slate-800 bg-gradient-to-r from-slate-950 to-slate-900 p-6">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <h2 className="text-slate-50 text-2xl font-semibold">{item.token}</h2>
+            <p className="text-slate-400 mt-1 text-sm">{item.pair} · {item.direction}</p>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${actionBadge(item.actionShort || item.action)}`}>
+              {item.actionShort || item.action}
+            </span>
+            <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${riskBadge(item.risk)}`}>
+              {item.risk}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-6 space-y-6">
+        <div className="grid md:grid-cols-3 gap-4">
+          <StatCard icon={Gauge} label="Action Score" value={String(item.score)} />
+          <StatCard icon={Activity} label="Liquidity Impact" value={`${item.impactPct}%`} />
+          <StatCard icon={Wallet} label="Trade Value" value={fmtUsd(item.tradeUsd)} />
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="bg-slate-900/70 border border-slate-800 rounded-3xl p-6">
+            <h3 className="text-base text-slate-100 font-semibold mb-4">Next Practical Action</h3>
+            <div className="space-y-4 text-sm text-slate-300 leading-6">
+              <ActionLine title="Action Now" body={item.action} />
+              <ActionLine title="What it means" body={item.why} />
+              <ActionLine title="What to do next" body={item.nextStep} />
+              <ActionLine title="Do not do" body={item.doNot} />
+              <ActionLine title="Cancel plan if" body={item.cancelIf} />
+            </div>
+          </div>
+
+          <div className="bg-slate-900/70 border border-slate-800 rounded-3xl p-6">
+            <h3 className="text-base text-slate-100 font-semibold">Signal Meter</h3>
+            <p className="text-slate-400 text-sm mt-1 mb-4">Momentum and confidence snapshot</p>
+            <div className="space-y-4">
+              <Meter label="Setup Quality" value={Math.min(100, item.score * 10)} />
+              <Meter label="Conviction" value={item.confidence === "High" ? 84 : item.confidence === "Medium" ? 66 : 38} />
+              <Meter label="Risk Control" value={item.risk === "High" ? 35 : item.risk === "Medium" ? 62 : 84} inverse />
+            </div>
+          </div>
+        </div>
+
+        {item.history && (
+          <div className="bg-slate-900/70 border border-slate-800 rounded-3xl p-6">
+            <h3 className="text-base text-slate-100 font-semibold">Recent Performance Matrix</h3>
+            <p className="text-slate-400 text-sm mt-1 mb-4">Signal score trend for this token</p>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={item.history}>
+                  <defs>
+                    <linearGradient id="grad1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#22c55e" stopOpacity={0.5} />
+                      <stop offset="100%" stopColor="#22c55e" stopOpacity={0.02} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
+                  <XAxis dataKey="d" stroke="#94a3b8" />
+                  <YAxis stroke="#94a3b8" />
+                  <Tooltip contentStyle={{ background: "#020617", border: "1px solid #334155", borderRadius: 16 }} />
+                  <Area type="monotone" dataKey="score" stroke="#22c55e" fill="url(#grad1)" strokeWidth={3} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MiniMetric({ icon: Icon, label, value }) {
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+      <div className="flex items-center gap-2 text-slate-400 text-xs uppercase tracking-wide">
+        <Icon className="w-4 h-4" />
+        {label}
+      </div>
+      <div className="text-slate-50 text-2xl font-semibold mt-2">{value}</div>
+    </div>
+  );
+}
+
+function SectionGrid({ title, desc, items, onOpen }) {
+  return (
+    <div className="space-y-4">
+      <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl p-6">
+        <h3 className="text-slate-100 text-lg font-semibold">{title}</h3>
+        <p className="text-slate-400 text-sm mt-1">{desc}</p>
+      </div>
+
       {items.length === 0 ? (
-        <div className="empty-text">No qualified names in this section right now.</div>
+        <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl p-8 text-slate-400">
+          No clean setup in this section right now.
+        </div>
       ) : (
-        <div className="list-grid">
+        <div className="grid md:grid-cols-2 gap-4">
           {items.map((item) => (
             <TokenCard key={`${item.token}-${item.pair}`} item={item} onOpen={onOpen} />
           ))}
@@ -370,32 +520,42 @@ function Section({ title, desc, items, onOpen }) {
   );
 }
 
-export default function App() {
+function StatusPill({ status, text }) {
+  const tone =
+    status === "ok"
+      ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
+      : status === "warn"
+      ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
+      : "bg-slate-700/50 text-slate-300 border-slate-700";
+
+  return (
+    <span className={`inline-flex items-center rounded-xl border px-3 py-2 text-xs font-medium ${tone}`}>
+      {text}
+    </span>
+  );
+}
+
+export default function SnitchDashboardApp() {
   const [data, setData] = useState(starterData);
   const [selected, setSelected] = useState(
-    starterData.tradeFocusNow[0] ||
-    starterData.emergingPotential[0] ||
-    starterData.cautionAvoid[0] ||
-    null
+    starterData.tradeFocusNow[0] ?? starterData.emergingPotential[0] ?? starterData.cautionAvoid[0] ?? null
   );
   const [search, setSearch] = useState("");
   const [minScore, setMinScore] = useState("0");
-  const [autoRefresh, setAutoRefresh] = useState(false);
-  const [fetchState, setFetchState] = useState("idle");
-  const [fetchMessage, setFetchMessage] = useState("Using starter data");
+  const [autoRefresh, setAutoRefresh] = useState(true);
   const [dataUrl, setDataUrl] = useState(
     localStorage.getItem("snitch-dashboard-url") || `${import.meta.env.BASE_URL}data/dashboard-current.json`
   );
+  const [fetchState, setFetchState] = useState("idle");
+  const [fetchMessage, setFetchMessage] = useState("Using starter data");
+  const [showSourceTools, setShowSourceTools] = useState(false);
   const fileRef = useRef(null);
 
   const loadParsedData = (parsed, sourceLabel = "Loaded data") => {
     const normalized = normalizeIncomingData(parsed);
     setData(normalized);
     setSelected(
-      normalized.tradeFocusNow[0] ||
-      normalized.emergingPotential[0] ||
-      normalized.cautionAvoid[0] ||
-      null
+      normalized.tradeFocusNow?.[0] ?? normalized.emergingPotential?.[0] ?? normalized.cautionAvoid?.[0] ?? null
     );
     localStorage.setItem("snitch-dashboard-data", JSON.stringify(normalized));
     setFetchMessage(sourceLabel);
@@ -432,16 +592,27 @@ export default function App() {
 
   useEffect(() => {
     if (!autoRefresh) return;
+    fetchRemoteData();
     const id = setInterval(fetchRemoteData, 30000);
     return () => clearInterval(id);
   }, [autoRefresh, dataUrl]);
 
+  const formatRelativeUpdate = (asOf) => {
+    if (!asOf) return "Update time unavailable";
+    const parsed = new Date(asOf.replace(" UTC", "Z"));
+    if (Number.isNaN(parsed.getTime())) return `Last sync: ${asOf}`;
+    const diffMs = Date.now() - parsed.getTime();
+    const diffMin = Math.max(0, Math.floor(diffMs / 60000));
+    if (diffMin < 1) return "Updated just now";
+    if (diffMin === 1) return "Updated 1 min ago";
+    if (diffMin < 60) return `Updated ${diffMin} mins ago`;
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr === 1) return "Updated 1 hour ago";
+    return `Updated ${diffHr} hours ago`;
+  };
+
   const allCards = useMemo(() => {
-    const merged = [
-      ...(data.tradeFocusNow || []),
-      ...(data.emergingPotential || []),
-      ...(data.cautionAvoid || [])
-    ];
+    const merged = [...(data.tradeFocusNow || []), ...(data.emergingPotential || []), ...(data.cautionAvoid || [])];
     return merged.filter((x) => {
       const scoreOk = Number(x.score || 0) >= Number(minScore || 0);
       const text = `${x.token} ${x.pair} ${x.direction} ${x.action}`.toLowerCase();
@@ -450,14 +621,9 @@ export default function App() {
     });
   }, [data, search, minScore]);
 
-  const tradeFocusNow = data.tradeFocusNow.filter((x) => allCards.includes(x));
-  const emergingPotential = data.emergingPotential.filter((x) => allCards.includes(x));
-  const cautionAvoid = data.cautionAvoid.filter((x) => allCards.includes(x));
-
-  const actionMix = data.performance?.actionMix || [];
-  const scoreTrend = data.performance?.scoreTrend || [];
-  const proof = data.performance?.proof || [];
-  const pieColors = ["#22c55e", "#f59e0b", "#ef4444"];
+  const perfBars = data.performance.scoreTrend || [];
+  const pieData = data.performance.actionMix || [];
+  const COLORS = ["#22c55e", "#f59e0b", "#ef4444"];
 
   const loadJson = async (file) => {
     const text = await file.text();
@@ -467,112 +633,197 @@ export default function App() {
   };
 
   return (
-    <div className="app-shell">
-      <div className="app-container">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="hero-row">
-          <div className="panel hero-panel">
-            <div className="brand-row">
-              <div className="brand-badge">
-                <Radar size={24} />
-              </div>
-              <div>
-                <h1 className="hero-title">SNITCH Alert Dashboard</h1>
-                <p className="hero-sub">Dark premium signal workspace for fast trading decisions</p>
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(34,197,94,0.12),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(59,130,246,0.12),_transparent_24%),linear-gradient(180deg,#020617_0%,#0f172a_100%)] text-slate-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+          <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
+                  <Radar className="w-6 h-6 text-emerald-300" />
+                </div>
+                <div>
+                  <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">SNITCH Alert Dashboard</h1>
+                  <p className="text-slate-400 mt-1">Dark premium signal workspace for fast trading decisions</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="panel source-panel">
-            <div className="source-title">
-              <Database size={16} />
-              <span>Data Source</span>
-            </div>
-            <div className="source-row">
-              <input
-                className="app-input"
-                value={dataUrl}
-                onChange={(e) => setDataUrl(e.target.value)}
-                placeholder="data/dashboard-current.json"
+            <div className="flex flex-wrap gap-2 items-center">
+              <span className="inline-flex items-center rounded-xl border border-slate-700 bg-slate-900/80 px-3 py-2 text-xs font-medium text-slate-200">
+                <Clock3 className="w-3.5 h-3.5 mr-1" />
+                {formatRelativeUpdate(data.meta.asOf)}
+              </span>
+
+              <span className="inline-flex items-center rounded-xl border border-emerald-500/30 bg-emerald-500/15 px-3 py-2 text-xs font-medium text-emerald-300">
+                {data.meta.marketBias}
+              </span>
+
+              <StatusPill
+                status={fetchState === "ok" ? "ok" : fetchState === "warn" ? "warn" : "idle"}
+                text={fetchState === "ok" ? "Live data" : fetchState === "warn" ? "Fallback data" : "Starter data"}
               />
-              <button className="btn btn-primary" onClick={fetchRemoteData}>Connect</button>
-            </div>
-            <div className="source-actions">
-              <div className="status-line">
-                {fetchState === "ok" ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                <span>{fetchMessage}</span>
-              </div>
-              <div className="btn-row">
-                <button className="btn btn-secondary" onClick={() => setAutoRefresh((v) => !v)}>
-                  <RefreshCw size={16} className={autoRefresh ? "spin" : ""} />
-                  <span>{autoRefresh ? "Auto Refresh On" : "Auto Refresh Off"}</span>
-                </button>
-                <button className="btn btn-secondary" onClick={() => fileRef.current?.click()}>
-                  <Upload size={16} />
-                  <span>Load JSON</span>
-                </button>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="application/json"
-                  className="hidden-input"
-                  onChange={(e) => e.target.files?.[0] && loadJson(e.target.files[0])}
-                />
-              </div>
+
+              <StatusPill
+                status={autoRefresh ? "ok" : "idle"}
+                text={autoRefresh ? "Auto refresh on" : "Manual refresh"}
+              />
             </div>
           </div>
         </motion.div>
 
-        <div className="panel metrics-panel">
-          <div className="metrics-grid">
-            <MiniMetric icon={Activity} label="Qualified" value={data.metrics.qualifiedSignals} />
-            <MiniMetric icon={Target} label="Focus" value={data.metrics.tradeFocus} />
-            <MiniMetric icon={Rocket} label="Emerging" value={data.metrics.emerging} />
-            <MiniMetric icon={TriangleAlert} label="Caution" value={data.metrics.caution} />
-            <MiniMetric icon={Gauge} label="Avg Confidence" value={`${data.metrics.avgConfidence}%`} />
-            <MiniMetric icon={TrendingUp} label="30D Win Rate" value={`${data.metrics.winRate30d}%`} />
+        <div className="grid xl:grid-cols-[1.25fr_0.75fr] gap-6 mb-6">
+          <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl">
+            <div className="p-5 sm:p-6">
+              <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+                <MiniMetric icon={Activity} label="Qualified" value={data.metrics.qualifiedSignals} />
+                <MiniMetric icon={Target} label="Focus" value={data.metrics.tradeFocus} />
+                <MiniMetric icon={Rocket} label="Emerging" value={data.metrics.emerging} />
+                <MiniMetric icon={TriangleAlert} label="Caution" value={data.metrics.caution} />
+                <MiniMetric icon={Gauge} label="Avg Confidence" value={`${data.metrics.avgConfidence}%`} />
+                <MiniMetric icon={TrendingUp} label="30D Win Rate" value={`${data.metrics.winRate30d}%`} />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl">
+            <div className="p-5 sm:p-6 space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-sm text-slate-300">
+                  <Database className="w-4 h-4 text-slate-400" />
+                  Data Source
+                </div>
+
+                <button
+                  className="inline-flex items-center rounded-2xl border border-slate-700 text-slate-200 hover:bg-slate-900 px-4 py-2 text-sm font-medium"
+                  onClick={() => setShowSourceTools((v) => !v)}
+                >
+                  {showSourceTools ? "Hide technical tools" : "Show technical tools"}
+                </button>
+              </div>
+
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-300">
+                <div className="font-medium text-slate-100 mb-1">Current status</div>
+                <div>{fetchMessage}</div>
+              </div>
+
+              {showSourceTools && (
+                <>
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Link2 className="absolute left-3 top-3.5 w-4 h-4 text-slate-500" />
+                      <input
+                        value={dataUrl}
+                        onChange={(e) => setDataUrl(e.target.value)}
+                        placeholder="/data/dashboard-current.json or public JSON URL"
+                        className="w-full pl-9 rounded-2xl bg-slate-900 border border-slate-800 text-slate-100 px-4 py-3 outline-none"
+                      />
+                    </div>
+
+                    <button
+                      className="inline-flex items-center rounded-2xl bg-slate-100 text-slate-950 hover:bg-white px-4 py-2 text-sm font-medium"
+                      onClick={fetchRemoteData}
+                    >
+                      Connect
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 flex-wrap text-xs text-slate-400">
+                    <div className="flex items-center gap-2">
+                      {fetchState === "ok" ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-amber-400" />
+                      )}
+                      <span>{fetchMessage}</span>
+                    </div>
+
+                    <div className="flex gap-2 flex-wrap">
+                      <button
+                        className="inline-flex items-center rounded-2xl border border-slate-700 text-slate-200 hover:bg-slate-900 px-4 py-2 text-sm font-medium"
+                        onClick={() => setAutoRefresh((v) => !v)}
+                      >
+                        <RefreshCw className={`w-4 h-4 mr-2 ${autoRefresh ? "animate-spin" : ""}`} />
+                        {autoRefresh ? "Auto Refresh On" : "Auto Refresh Off"}
+                      </button>
+
+                      <button
+                        className="inline-flex items-center rounded-2xl border border-slate-700 text-slate-200 hover:bg-slate-900 px-4 py-2 text-sm font-medium"
+                        onClick={() => fileRef.current?.click()}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Load JSON
+                      </button>
+
+                      <input
+                        ref={fileRef}
+                        type="file"
+                        accept="application/json"
+                        className="hidden"
+                        onChange={(e) => e.target.files?.[0] && loadJson(e.target.files[0])}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="panel search-panel">
-          <div className="search-wrap">
-            <Search size={16} />
-            <input
-              className="app-input search-input"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search token, pair, action"
-            />
+        <div className="grid xl:grid-cols-[1.2fr_0.8fr] gap-6 mb-6">
+          <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl">
+            <div className="p-5 sm:p-6 flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-3.5 w-4 h-4 text-slate-500" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search token, pair, action"
+                  className="w-full pl-9 rounded-2xl bg-slate-900 border border-slate-800 text-slate-100 px-4 py-3 outline-none"
+                />
+              </div>
+
+              <div className="w-full sm:w-44">
+                <select
+                  value={minScore}
+                  onChange={(e) => setMinScore(e.target.value)}
+                  className="w-full rounded-2xl bg-slate-900 border border-slate-800 text-slate-100 px-4 py-3 outline-none"
+                >
+                  <option value="0">Min score 0</option>
+                  <option value="4">Min score 4</option>
+                  <option value="5">Min score 5</option>
+                  <option value="6">Min score 6</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <select className="app-select" value={minScore} onChange={(e) => setMinScore(e.target.value)}>
-            <option value="0">Min score 0</option>
-            <option value="4">Min score 4</option>
-            <option value="5">Min score 5</option>
-            <option value="6">Min score 6</option>
-          </select>
-          <div className="pills">
-            <TinyBadge tone="green"><Clock3 size={12} /> {data.meta.asOf}</TinyBadge>
-            <TinyBadge tone="green">{data.meta.marketBias}</TinyBadge>
+
+          <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl">
+            <div className="p-5 sm:p-6 text-sm text-slate-300 leading-6">
+              <div className="font-medium text-slate-100 mb-1">How to use this</div>
+              Focus means highest-priority setups to inspect now. Emerging means promising but not fully confirmed. Caution means avoid new exposure or reduce risk.
+            </div>
           </div>
         </div>
 
-        <div className="main-grid">
-          <div className="stack-grid">
-            <Section
+        <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-6 mb-6">
+          <div className="space-y-6">
+            <SectionGrid
               title="Trade Focus Now"
               desc="Highest priority names to monitor immediately."
-              items={tradeFocusNow}
+              items={data.tradeFocusNow.filter((x) => allCards.includes(x))}
               onOpen={setSelected}
             />
-            <Section
+            <SectionGrid
               title="Emerging Potential"
               desc="Early setups that still need confirmation."
-              items={emergingPotential}
+              items={data.emergingPotential.filter((x) => allCards.includes(x))}
               onOpen={setSelected}
             />
-            <Section
+            <SectionGrid
               title="Caution / Avoid"
               desc="Risky or bearish structures that need caution."
-              items={cautionAvoid}
+              items={data.cautionAvoid.filter((x) => allCards.includes(x))}
               onOpen={setSelected}
             />
           </div>
@@ -580,47 +831,39 @@ export default function App() {
           <DetailPanel item={selected} />
         </div>
 
-        <div className="charts-grid">
-          <div className="panel">
-            <div className="section-title">Action Mix</div>
-            <div className="section-sub">Distribution of current dashboard actions</div>
-            <div className="chart-wrap">
+        <div className="grid xl:grid-cols-[0.8fr_1.2fr] gap-6 mb-6">
+          <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl">
+            <div className="p-6">
+              <h3 className="text-slate-100 font-semibold">Action Mix</h3>
+              <p className="text-slate-400 text-sm mt-1">Distribution of current dashboard actions</p>
+            </div>
+            <div className="px-6 pb-6 h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={actionMix} dataKey="value" nameKey="name" innerRadius={60} outerRadius={95} paddingAngle={3}>
-                    {actionMix.map((entry, index) => (
-                      <Cell key={entry.name} fill={pieColors[index % pieColors.length]} />
+                  <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={95} paddingAngle={3}>
+                    {pieData.map((entry, index) => (
+                      <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      background: "#020617",
-                      border: "1px solid #334155",
-                      borderRadius: 16
-                    }}
-                  />
+                  <Tooltip contentStyle={{ background: "#020617", border: "1px solid #334155", borderRadius: 16 }} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          <div className="panel">
-            <div className="section-title">Performance Matrix</div>
-            <div className="section-sub">Focus, emerging, and caution trend over recent sessions</div>
-            <div className="chart-wrap">
+          <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl">
+            <div className="p-6">
+              <h3 className="text-slate-100 font-semibold">Performance Matrix</h3>
+              <p className="text-slate-400 text-sm mt-1">Focus, emerging, and caution trend over recent sessions</p>
+            </div>
+            <div className="px-6 pb-6 h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={scoreTrend}>
+                <BarChart data={perfBars}>
                   <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
                   <XAxis dataKey="name" stroke="#94a3b8" />
                   <YAxis stroke="#94a3b8" />
-                  <Tooltip
-                    contentStyle={{
-                      background: "#020617",
-                      border: "1px solid #334155",
-                      borderRadius: 16
-                    }}
-                  />
+                  <Tooltip contentStyle={{ background: "#020617", border: "1px solid #334155", borderRadius: 16 }} />
                   <Legend />
                   <Bar dataKey="focus" fill="#22c55e" radius={[8, 8, 0, 0]} />
                   <Bar dataKey="emerging" fill="#f59e0b" radius={[8, 8, 0, 0]} />
@@ -631,47 +874,62 @@ export default function App() {
           </div>
         </div>
 
-        <div className="bottom-grid">
-          <div className="panel">
-            <div className="section-title">Proof Snapshot</div>
-            <div className="section-sub">Quick performance metrics</div>
-            <div className="proof-grid">
-              {proof.map((p) => (
-                <div key={p.metric} className="proof-box">
-                  <div className="proof-label">{p.metric}</div>
-                  <div className="proof-value">{p.value}</div>
+        <div className="grid xl:grid-cols-[0.9fr_1.1fr] gap-6">
+          <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl">
+            <div className="p-6">
+              <h3 className="text-slate-100 font-semibold">Proof Snapshot</h3>
+              <p className="text-slate-400 text-sm mt-1">Quick performance metrics</p>
+            </div>
+            <div className="px-6 pb-6 grid grid-cols-2 gap-3">
+              {data.performance.proof.map((p) => (
+                <div key={p.metric} className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+                  <div className="text-slate-400 text-xs">{p.metric}</div>
+                  <div className="text-slate-50 text-2xl font-semibold mt-2">{p.value}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="panel">
-            <div className="section-title">Recent Qualified Signals</div>
-            <div className="section-sub">Latest filtered signals worth attention</div>
-            <div className="recent-list">
-              {(data.recentSignals || []).map((r) => (
+          <div className="bg-slate-950/70 border border-slate-800 rounded-3xl shadow-2xl">
+            <div className="p-6">
+              <h3 className="text-slate-100 font-semibold">Recent Qualified Signals</h3>
+              <p className="text-slate-400 text-sm mt-1">Latest filtered signals worth attention</p>
+            </div>
+            <div className="px-6 pb-6 space-y-3">
+              {data.recentSignals.map((r) => (
                 <button
                   key={`${r.time}-${r.token}`}
-                  className="recent-item"
                   onClick={() => {
                     const found = [...data.tradeFocusNow, ...data.emergingPotential, ...data.cautionAvoid].find((x) => x.token === r.token);
                     if (found) setSelected(found);
                   }}
+                  className="w-full text-left rounded-2xl border border-slate-800 bg-slate-900/70 p-4 hover:bg-slate-900 transition"
                 >
-                  <div className="recent-top">
+                  <div className="flex items-start justify-between gap-3 flex-wrap">
                     <div>
-                      <div className="recent-token">{r.token} <span>{r.pair}</span></div>
-                      <div className="recent-dir">{r.direction}</div>
+                      <div className="text-slate-50 font-medium">
+                        {r.token} <span className="text-slate-500 font-normal">· {r.pair}</span>
+                      </div>
+                      <div className="text-slate-400 text-sm mt-1">{r.direction}</div>
                     </div>
-                    <div className="recent-right">
-                      <TinyBadge tone={actionTone(r.action)}>{r.action}</TinyBadge>
-                      <div className="recent-time">{r.time}</div>
+                    <div className="text-right">
+                      <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${actionBadge(r.action)}`}>
+                        {r.action}
+                      </span>
+                      <div className="text-slate-400 text-xs mt-2">{r.time}</div>
                     </div>
                   </div>
-                  <div className="recent-metrics">
-                    <div>Score <strong>{r.score}</strong></div>
-                    <div>Impact <strong>{r.impact}</strong></div>
-                    <div>USD <strong>{r.usd}</strong></div>
+
+                  <div className="mt-3 grid grid-cols-3 gap-2 text-sm">
+                    <div className="rounded-xl bg-slate-950/60 px-3 py-2 border border-slate-800">
+                      Score <span className="text-slate-50 ml-1">{r.score}</span>
+                    </div>
+                    <div className="rounded-xl bg-slate-950/60 px-3 py-2 border border-slate-800">
+                      Impact <span className="text-slate-50 ml-1">{r.impact}</span>
+                    </div>
+                    <div className="rounded-xl bg-slate-950/60 px-3 py-2 border border-slate-800">
+                      USD <span className="text-slate-50 ml-1">{r.usd}</span>
+                    </div>
                   </div>
                 </button>
               ))}
