@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "product": "SNITCH Alert Dashboard",
+    "mode": "Live Monitor",
+    "marketBias": "Neutral",
+    "asOf": "Today",
+    "dataSource": "Starter JSON"
+  },
+  "metrics": {
+    "qualifiedSignals": 1,
+    "tradeFocus": 1,
+    "emerging": 0,
+    "caution": 0,
+    "avgConfidence": 68,
+    "winRate30d": 58
+  },
+  "tradeFocusNow": [
+    {
+      "token": "WETH",
+      "pair": "WETH/USDC",
+      "action": "Prepare Entry",
+      "actionShort": "WAIT FOR CONFIRMATION",
+      "confidence": "Medium",
+      "score": 7.1,
+      "direction": "Buy Pressure",
+      "impactPct": 0.82,
+      "tradeUsd": 28370,
+      "risk": "Medium",
+      "why": "Meaningful buy pressure on a liquid pair.",
+      "nextStep": "Open chart now and wait for confirmation.",
+      "doNot": "Do not chase spike.",
+      "cancelIf": "Cancel if buy flow fades."
+    }
+  ],
+  "emergingPotential": [],
+  "cautionAvoid": [],
+  "recentSignals": [],
+  "performance": {
+    "scoreTrend": [],
+    "actionMix": [],
+    "proof": []
+  }
+}
