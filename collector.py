@@ -14,26 +14,6 @@ def load_signals():
         return json.load(f)
 
 
-def action_short(item):
-    score = float(item.get("score", 0))
-    direction = item.get("direction", "")
-    risk = item.get("risk", "Medium")
-
-    if direction == "Buy Pressure":
-        if score >= 7:
-            return "WAIT FOR CONFIRMATION"
-        if score >= 5:
-            return "WATCH"
-        return "IGNORE"
-
-    if direction == "Sell Pressure":
-        if risk == "High" or score >= 5:
-            return "REDUCE RISK"
-        return "WATCH"
-
-    return "WATCH"
-
-
 def action_long(short_action):
     mapping = {
         "WAIT FOR CONFIRMATION": "Prepare Entry",
@@ -44,15 +24,17 @@ def action_long(short_action):
     return mapping.get(short_action, short_action.title())
 
 
+def sort_bucket(items):
+    return sorted(items, key=lambda x: (float(x.get("score", 0)), float(x.get("tradeUsd", 0))), reverse=True)
+
+
 def build_buckets(signals):
     trade_focus = []
     emerging = []
     caution = []
 
     for raw in signals:
-        short = action_short(raw)
-        if short == "IGNORE":
-            continue
+        short = raw.get("actionShort", "WATCH")
 
         item = {
             "token": raw["token"],
@@ -79,7 +61,7 @@ def build_buckets(signals):
         else:
             caution.append(item)
 
-    return trade_focus, emerging, caution
+    return sort_bucket(trade_focus), sort_bucket(emerging), sort_bucket(caution)
 
 
 def build_recent(signals):
@@ -90,7 +72,7 @@ def build_recent(signals):
             "token": s["token"],
             "pair": s["pair"],
             "direction": s["direction"],
-            "action": action_short(s),
+            "action": s.get("actionShort", "WATCH"),
             "score": s["score"],
             "impact": f"{s['impactPct']}%",
             "usd": f"${s['tradeUsd']:,.2f}",
@@ -98,10 +80,19 @@ def build_recent(signals):
     return recent
 
 
+def build_action_mix(trade_focus, emerging, caution):
+    return [
+        {"name": "Prepare / Wait", "value": len(trade_focus)},
+        {"name": "Watch", "value": len(emerging)},
+        {"name": "Avoid / Reduce", "value": len(caution)},
+    ]
+
+
 def main():
     signals = load_signals()
     trade_focus, emerging, caution = build_buckets(signals)
 
+    total = len(trade_focus) + len(emerging) + len(caution)
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
     data = {
@@ -113,7 +104,7 @@ def main():
             "dataSource": "collector.py"
         },
         "metrics": {
-            "qualifiedSignals": len(trade_focus) + len(emerging) + len(caution),
+            "qualifiedSignals": total,
             "tradeFocus": len(trade_focus),
             "emerging": len(emerging),
             "caution": len(caution),
@@ -126,13 +117,9 @@ def main():
         "recentSignals": build_recent(signals),
         "performance": {
             "scoreTrend": [],
-            "actionMix": [
-                {"name": "Prepare / Wait", "value": len(trade_focus)},
-                {"name": "Watch", "value": len(emerging)},
-                {"name": "Avoid / Reduce", "value": len(caution)}
-            ],
+            "actionMix": build_action_mix(trade_focus, emerging, caution),
             "proof": [
-                {"metric": "Qualified Signals", "value": str(len(trade_focus) + len(emerging) + len(caution))},
+                {"metric": "Qualified Signals", "value": str(total)},
                 {"metric": "30D Win Rate", "value": "58%"},
                 {"metric": "Avg Confidence", "value": "70/100"},
                 {"metric": "Risk-Off Alerts", "value": str(len(caution))}
