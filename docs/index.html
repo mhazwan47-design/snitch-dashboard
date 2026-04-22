@@ -3,60 +3,489 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SNITCH Dashboard</title>
+  <title>SNITCH Alert Dashboard</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #f8fafc;
-      padding: 24px;
+    :root{
+      --bg:#071225;
+      --card:#0b1830;
+      --card2:#0e1d39;
+      --border:#223456;
+      --text:#eef2ff;
+      --muted:#93a4c3;
+      --green:#2ed180;
+      --amber:#f5b74f;
+      --red:#ef5a5a;
+      --blue:#4da3ff;
     }
-    .card {
-      background: #111827;
-      border: 1px solid #334155;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(46,209,128,0.08), transparent 25%),
+        radial-gradient(circle at top right, rgba(77,163,255,0.10), transparent 22%),
+        linear-gradient(180deg,#050d1d 0%, #0b1730 100%);
+      color:var(--text);
+      padding:24px;
     }
-    h1, h2 {
-      margin-top: 0;
+    .wrap{max-width:1400px;margin:0 auto}
+    .card{
+      background:rgba(11,24,48,0.92);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:22px;
+      box-shadow:0 12px 36px rgba(0,0,0,0.25);
     }
-    .muted {
-      color: #94a3b8;
+    .grid{display:grid;gap:18px}
+    .top{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-bottom:18px}
+    .metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+    .metric{
+      background:rgba(14,29,57,0.9);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
     }
-    .pill {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #1e293b;
-      color: #cbd5e1;
-      font-size: 12px;
-      margin-right: 8px;
+    .metric .label{font-size:12px;color:var(--muted);text-transform:uppercase}
+    .metric .value{font-size:28px;font-weight:700;margin-top:8px}
+    .hero h1{margin:0 0 8px;font-size:56px;line-height:1}
+    .hero p{margin:0;color:var(--muted);font-size:16px}
+    .pill{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#152745;
+      color:#d7e2fb;
+      font-size:12px;
+      margin-right:8px;
+      margin-top:14px;
+    }
+    .controls{display:flex;flex-direction:column;gap:12px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    input,button{
+      border:none;
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14px;
+    }
+    input{
+      flex:1;
+      background:#0a1325;
+      color:var(--text);
+      border:1px solid var(--border);
+      min-width:220px;
+    }
+    button{
+      background:#eef2ff;
+      color:#081225;
+      cursor:pointer;
+      font-weight:700;
+    }
+    button.secondary{
+      background:#10203d;
+      color:#eef2ff;
+      border:1px solid var(--border);
+    }
+    .status{font-size:13px;color:var(--muted)}
+    .main{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .three{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .section-title{margin:0 0 6px;font-size:20px}
+    .section-sub{margin:0 0 14px;color:var(--muted);font-size:14px}
+    .token-list{display:flex;flex-direction:column;gap:12px}
+    .token{
+      background:rgba(14,29,57,0.92);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      cursor:pointer;
+    }
+    .token:hover{background:#102240}
+    .token .topline{
+      display:flex;justify-content:space-between;gap:12px;align-items:flex-start
+    }
+    .token .name{font-size:26px;font-weight:700}
+    .token .pair{color:var(--muted);font-size:13px;margin-top:4px}
+    .badge{
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .b-green{background:rgba(46,209,128,.14);color:#81f0b7;border:1px solid rgba(46,209,128,.28)}
+    .b-amber{background:rgba(245,183,79,.14);color:#ffd58e;border:1px solid rgba(245,183,79,.28)}
+    .b-red{background:rgba(239,90,90,.14);color:#ff9a9a;border:1px solid rgba(239,90,90,.28)}
+    .mini-grid{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px
+    }
+    .mini{
+      background:#0a1325;border:1px solid var(--border);border-radius:14px;padding:12px
+    }
+    .mini .k{font-size:12px;color:var(--muted)}
+    .mini .v{font-size:18px;font-weight:700;margin-top:6px}
+    .desc{margin-top:14px;color:#d8e1f4;font-size:14px;line-height:1.5}
+    .detail{
+      min-height:420px;
+    }
+    .detail h2{margin:0 0 6px;font-size:34px}
+    .detail .sub{color:var(--muted);margin-bottom:14px}
+    .detail-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px
+    }
+    .linebox{
+      background:#0a1325;border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:10px
+    }
+    .linebox .k{font-size:11px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+    .linebox .v{line-height:1.5}
+    .recent{
+      margin-top:18px;
+    }
+    .recent-item{
+      background:rgba(14,29,57,0.92);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:10px;
+    }
+    .small{font-size:13px;color:var(--muted)}
+    .empty{
+      color:var(--muted);
+      padding:18px 0 4px;
+    }
+    @media (max-width:1100px){
+      .top,.main,.three{grid-template-columns:1fr}
+      .metrics{grid-template-columns:repeat(2,1fr)}
+      .hero h1{font-size:42px}
+    }
+    @media (max-width:700px){
+      body{padding:14px}
+      .metrics{grid-template-columns:1fr 1fr}
+      .three{grid-template-columns:1fr}
+      .detail-grid{grid-template-columns:1fr}
+      .token .name{font-size:22px}
+      .hero h1{font-size:34px}
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>SNITCH Alert Dashboard</h1>
-    <div class="pill">Starter Version</div>
-    <div class="pill">GitHub Pages</div>
-    <p class="muted">This is the first live version of your dashboard.</p>
+  <div class="wrap">
+    <div class="top">
+      <div class="card hero">
+        <h1>SNITCH Alert Dashboard</h1>
+        <p>Dark premium signal workspace for fast trading decisions.</p>
+        <div id="hero-pills"></div>
+      </div>
+
+      <div class="card controls">
+        <div class="small">Data Source</div>
+        <div class="row">
+          <input id="dataUrl" value="./data/dashboard-current.json" />
+          <button onclick="loadRemoteData()">Connect</button>
+        </div>
+        <div class="row">
+          <button class="secondary" onclick="loadRemoteData()">Refresh Now</button>
+        </div>
+        <div id="status" class="status">Using starter data</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:18px;">
+      <div class="metrics" id="metrics"></div>
+    </div>
+
+    <div class="main">
+      <div class="grid">
+        <div class="three">
+          <div class="card">
+            <h3 class="section-title">Trade Focus Now</h3>
+            <p class="section-sub">Highest priority names to monitor immediately.</p>
+            <div id="tradeFocusNow" class="token-list"></div>
+          </div>
+          <div class="card">
+            <h3 class="section-title">Emerging Potential</h3>
+            <p class="section-sub">Early setups that still need confirmation.</p>
+            <div id="emergingPotential" class="token-list"></div>
+          </div>
+          <div class="card">
+            <h3 class="section-title">Caution / Avoid</h3>
+            <p class="section-sub">Risky or bearish structures that need caution.</p>
+            <div id="cautionAvoid" class="token-list"></div>
+          </div>
+        </div>
+
+        <div class="card recent">
+          <h3 class="section-title">Recent Qualified Signals</h3>
+          <p class="section-sub">Latest filtered signals worth attention.</p>
+          <div id="recentSignals"></div>
+        </div>
+      </div>
+
+      <div class="card detail" id="detailPanel">
+        <div class="empty">Select a token card to view the full action plan.</div>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>Trade Focus Now</h2>
-    <p>WETH - Wait for confirmation</p>
-  </div>
+  <script>
+    const starterData = {
+      meta: {
+        product: "SNITCH Alert Dashboard",
+        mode: "Live Monitor",
+        marketBias: "Neutral",
+        asOf: "Today",
+        dataSource: "Starter JSON"
+      },
+      metrics: {
+        qualifiedSignals: 3,
+        tradeFocus: 1,
+        emerging: 1,
+        caution: 1,
+        avgConfidence: 68,
+        winRate30d: 58
+      },
+      tradeFocusNow: [
+        {
+          token: "WETH",
+          pair: "WETH/USDC",
+          action: "Prepare Entry",
+          actionShort: "WAIT FOR CONFIRMATION",
+          confidence: "Medium",
+          score: 7.1,
+          direction: "Buy Pressure",
+          impactPct: 0.82,
+          tradeUsd: 28370,
+          risk: "Medium",
+          why: "Meaningful buy pressure on a liquid pair.",
+          nextStep: "Open chart now and wait for confirmation.",
+          doNot: "Do not chase a fast spike.",
+          cancelIf: "Cancel if buy flow fades."
+        }
+      ],
+      emergingPotential: [
+        {
+          token: "SAPIEN",
+          pair: "USDC/SAPIEN",
+          action: "Keep On Watch",
+          actionShort: "WATCH",
+          confidence: "Medium",
+          score: 5.78,
+          direction: "Buy Pressure",
+          impactPct: 0.09,
+          tradeUsd: 879.9,
+          risk: "Medium",
+          why: "Early momentum is forming but setup still needs follow-through.",
+          nextStep: "Monitor next 15–30 minutes for a second strong signal.",
+          doNot: "Do not enter big size yet.",
+          cancelIf: "Cancel if there is no follow-up buy flow."
+        }
+      ],
+      cautionAvoid: [
+        {
+          token: "SOL",
+          pair: "SOL/cbBTC",
+          action: "Reduce Risk",
+          actionShort: "REDUCE RISK",
+          confidence: "Medium",
+          score: 5.22,
+          direction: "Sell Pressure",
+          impactPct: 0.97,
+          tradeUsd: 2780,
+          risk: "High",
+          why: "Bearish dominance detected. This is not a clean long setup.",
+          nextStep: "Avoid fresh entry and reduce bullish bias.",
+          doNot: "Do not catch the dip blindly.",
+          cancelIf: "Cancel if sell pressure fades and structure improves."
+        }
+      ],
+      recentSignals: [
+        { time: "20:41", token: "WETH", pair: "WETH/USDC", direction: "Buy Pressure", action: "WAIT FOR CONFIRMATION", score: 7.1, impact: "0.82%", usd: "$28.37K" },
+        { time: "20:36", token: "SAPIEN", pair: "USDC/SAPIEN", direction: "Buy Pressure", action: "WATCH", score: 5.78, impact: "0.09%", usd: "$879.90" },
+        { time: "20:31", token: "SOL", pair: "SOL/cbBTC", direction: "Sell Pressure", action: "REDUCE RISK", score: 5.22, impact: "0.97%", usd: "$2.78K" }
+      ]
+    };
 
-  <div class="card">
-    <h2>Emerging Potential</h2>
-    <p>SAPIEN - Keep on watch</p>
-  </div>
+    let dashboardData = starterData;
 
-  <div class="card">
-    <h2>Caution / Avoid</h2>
-    <p>SOL - Reduce risk</p>
-  </div>
+    function badgeClass(action) {
+      const a = (action || "").toUpperCase();
+      if (["BUY NOW","PREPARE ENTRY","WAIT FOR CONFIRMATION"].includes(a)) return "badge b-green";
+      if (["WATCH","KEEP ON WATCH"].includes(a)) return "badge b-amber";
+      return "badge b-red";
+    }
+
+    function riskClass(risk) {
+      if (risk === "High") return "badge b-red";
+      if (risk === "Medium") return "badge b-amber";
+      return "badge b-green";
+    }
+
+    function fmtUsd(v) {
+      if (typeof v !== "number") return v;
+      if (Math.abs(v) >= 1000000) return `$${(v / 1000000).toFixed(2)}M`;
+      if (Math.abs(v) >= 1000) return `$${(v / 1000).toFixed(2)}K`;
+      return `$${v.toFixed(2)}`;
+    }
+
+    function renderHero(meta) {
+      document.getElementById("hero-pills").innerHTML = `
+        <span class="pill">${meta.mode || "Live Monitor"}</span>
+        <span class="pill">${meta.marketBias || "Neutral"}</span>
+        <span class="pill">${meta.asOf || ""}</span>
+      `;
+    }
+
+    function renderMetrics(metrics) {
+      const items = [
+        ["Qualified", metrics.qualifiedSignals],
+        ["Focus", metrics.tradeFocus],
+        ["Emerging", metrics.emerging],
+        ["Caution", metrics.caution],
+        ["Avg Confidence", `${metrics.avgConfidence}%`],
+        ["30D Win Rate", `${metrics.winRate30d}%`]
+      ];
+      document.getElementById("metrics").innerHTML = items.map(([k,v]) => `
+        <div class="metric">
+          <div class="label">${k}</div>
+          <div class="value">${v}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderTokenList(id, arr) {
+      const el = document.getElementById(id);
+      if (!arr || arr.length === 0) {
+        el.innerHTML = `<div class="empty">No qualified names right now.</div>`;
+        return;
+      }
+      el.innerHTML = arr.map((item, idx) => `
+        <div class="token" onclick="openDetail('${id}', ${idx})">
+          <div class="topline">
+            <div>
+              <div class="name">${item.token}</div>
+              <div class="pair">${item.pair}</div>
+            </div>
+            <div class="${badgeClass(item.actionShort || item.action)}">${item.actionShort || item.action}</div>
+          </div>
+          <div class="mini-grid">
+            <div class="mini">
+              <div class="k">Score</div>
+              <div class="v">${item.score}</div>
+            </div>
+            <div class="mini">
+              <div class="k">Risk</div>
+              <div class="v"><span class="${riskClass(item.risk)}">${item.risk}</span></div>
+            </div>
+          </div>
+          <div class="desc">${item.why}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderRecent(arr) {
+      const el = document.getElementById("recentSignals");
+      if (!arr || arr.length === 0) {
+        el.innerHTML = `<div class="empty">No recent signals available.</div>`;
+        return;
+      }
+      el.innerHTML = arr.map(item => `
+        <div class="recent-item">
+          <div><strong>${item.token}</strong> <span class="small">· ${item.pair}</span></div>
+          <div class="small" style="margin-top:6px;">${item.direction} · ${item.action} · Score ${item.score} · Impact ${item.impact} · ${item.usd}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderAll(data) {
+      renderHero(data.meta || {});
+      renderMetrics(data.metrics || {});
+      renderTokenList("tradeFocusNow", data.tradeFocusNow || []);
+      renderTokenList("emergingPotential", data.emergingPotential || []);
+      renderTokenList("cautionAvoid", data.cautionAvoid || []);
+      renderRecent(data.recentSignals || []);
+    }
+
+    function openDetail(section, idx) {
+      const map = {
+        tradeFocusNow: dashboardData.tradeFocusNow || [],
+        emergingPotential: dashboardData.emergingPotential || [],
+        cautionAvoid: dashboardData.cautionAvoid || []
+      };
+      const item = map[section][idx];
+      if (!item) return;
+
+      document.getElementById("detailPanel").innerHTML = `
+        <h2>${item.token}</h2>
+        <div class="sub">${item.pair} · ${item.direction}</div>
+
+        <div class="detail-grid">
+          <div class="mini">
+            <div class="k">Action Score</div>
+            <div class="v">${item.score}</div>
+          </div>
+          <div class="mini">
+            <div class="k">Impact</div>
+            <div class="v">${item.impactPct}%</div>
+          </div>
+          <div class="mini">
+            <div class="k">Trade USD</div>
+            <div class="v">${fmtUsd(item.tradeUsd)}</div>
+          </div>
+        </div>
+
+        <div class="linebox">
+          <div class="k">Action Now</div>
+          <div class="v">${item.action}</div>
+        </div>
+        <div class="linebox">
+          <div class="k">What it means</div>
+          <div class="v">${item.why}</div>
+        </div>
+        <div class="linebox">
+          <div class="k">What to do next</div>
+          <div class="v">${item.nextStep}</div>
+        </div>
+        <div class="linebox">
+          <div class="k">Do not do</div>
+          <div class="v">${item.doNot}</div>
+        </div>
+        <div class="linebox">
+          <div class="k">Cancel plan if</div>
+          <div class="v">${item.cancelIf}</div>
+        </div>
+      `;
+    }
+
+    async function loadRemoteData() {
+      const url = document.getElementById("dataUrl").value.trim() || "./data/dashboard-current.json";
+      const status = document.getElementById("status");
+      try {
+        status.textContent = "Loading live JSON...";
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        dashboardData = json;
+        renderAll(dashboardData);
+        status.textContent = `Connected to ${url}`;
+      } catch (e) {
+        dashboardData = starterData;
+        renderAll(dashboardData);
+        status.textContent = `Could not fetch ${url}. Using starter data.`;
+      }
+    }
+
+    renderAll(dashboardData);
+    openDetail("tradeFocusNow", 0);
+    loadRemoteData();
+  </script>
 </body>
 </html>
