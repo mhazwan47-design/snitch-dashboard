@@ -34,31 +34,31 @@ def build_buckets(signals):
     caution = []
 
     for raw in signals:
-      short = raw.get("actionShort", "WATCH")
-      item = {
-          "token": raw["token"],
-          "pair": raw["pair"],
-          "action": action_long(short),
-          "actionShort": short,
-          "confidence": raw.get("confidence", "Medium"),
-          "score": raw.get("score", 0),
-          "direction": raw.get("direction", ""),
-          "impactPct": raw.get("impactPct", 0),
-          "tradeUsd": raw.get("tradeUsd", 0),
-          "risk": raw.get("risk", "Medium"),
-          "why": raw.get("why", ""),
-          "nextStep": raw.get("nextStep", ""),
-          "doNot": raw.get("doNot", ""),
-          "cancelIf": raw.get("cancelIf", ""),
-      }
+        short = raw.get("actionShort", "WATCH")
+        item = {
+            "token": raw["token"],
+            "pair": raw["pair"],
+            "action": action_long(short),
+            "actionShort": short,
+            "confidence": raw.get("confidence", "Medium"),
+            "score": raw.get("score", 0),
+            "direction": raw.get("direction", ""),
+            "impactPct": raw.get("impactPct", 0),
+            "tradeUsd": raw.get("tradeUsd", 0),
+            "risk": raw.get("risk", "Medium"),
+            "why": raw.get("why", ""),
+            "nextStep": raw.get("nextStep", ""),
+            "doNot": raw.get("doNot", ""),
+            "cancelIf": raw.get("cancelIf", ""),
+        }
 
-      if item["direction"] == "Buy Pressure":
-          if item["score"] >= 7:
-              trade_focus.append(item)
-          else:
-              emerging.append(item)
-      else:
-          caution.append(item)
+        if item["direction"] == "Buy Pressure":
+            if item["score"] >= 7:
+                trade_focus.append(item)
+            else:
+                emerging.append(item)
+        else:
+            caution.append(item)
 
     return sort_bucket(trade_focus), sort_bucket(emerging), sort_bucket(caution)
 
